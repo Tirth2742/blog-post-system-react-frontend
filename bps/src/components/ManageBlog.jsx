@@ -17,7 +17,12 @@ const ManageBlog = () => {
       }
 
       try {
-        const response = await axios.get(`https://localhost:7019/api/BlogPost/mypost/${userId}`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`https://localhost:7019/api/BlogPost/mypost/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         setPosts(response.data);
       } catch (err) {
         setError("Failed to fetch blog posts.");
@@ -31,7 +36,12 @@ const ManageBlog = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://localhost:7019/api/BlogPost/${id}`);
+      const token = localStorage.getItem("token");
+      await axios.delete(`https://localhost:7019/api/BlogPost/${id}`, {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
       setPosts(posts.filter((post) => post.id !== id));
     } catch (err) {
       setError("Failed to delete post.");
@@ -43,7 +53,7 @@ const ManageBlog = () => {
 
   return (
     <div className="manage-blog">
-      <h1>Manage Blog</h1>
+      
 
       <div className="post-list">
         {posts.length === 0 ? (

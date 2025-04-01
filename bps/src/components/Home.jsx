@@ -57,9 +57,15 @@ const Home = () => {
       if (filters.daterange) params.append("daterange", filters.daterange);
       if (filters.fromdate) params.append("fromdate", filters.fromdate);
       if (filters.todate) params.append("todate", filters.todate);
-
-      const response = await axios.get(`https://localhost:7019/api/BlogPost/filter?${params.toString()}`);
-      setPosts(response.data);
+      
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`https://localhost:7019/api/BlogPost/filter?${params.toString()}`, {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
+    
+      setPosts(response.data);  
     } catch (err) {
       setError("Failed to fetch posts. Please try again later.");
     }
@@ -74,7 +80,12 @@ const Home = () => {
       }
 
       setIsSearching(true);
-      const response = await axios.get(`https://localhost:7019/api/BlogPost/search?st=${searchTerm}`);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`https://localhost:7019/api/BlogPost/search?st=${searchTerm}`, {
+          headers: {
+              Authorization: `Bearer ${token}` // Attach token
+          }
+      });
       setPosts(response.data);
     } catch (err) {
       setError("Search failed. Please try again.");
@@ -109,7 +120,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <h2>Home Page</h2>
+      
 
       {/* Search & Filter Section */}
       <div className="search-filter">
@@ -196,7 +207,7 @@ const Home = () => {
                 By {post.authorName} • {new Date(post.createdAt).toDateString()} • {post.category}
               </p>
               <p>{post.context.substring(0, 100)}...</p>
-              <button onClick={() => navigate(`/blog/${post.id}`)}>Read More</button>
+              <button className = "read-more" onClick={() => navigate(`/blog/${post.id}`)}>Read More</button>
             </div>
           ))
         ) : (

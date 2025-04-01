@@ -11,7 +11,12 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`https://localhost:7019/api/BlogPost/${id}`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`https://localhost:7019/api/BlogPost/${id}`, {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
         setPost(response.data);
       } catch (err) {
         setError("Failed to fetch blog post. Please try again later.");

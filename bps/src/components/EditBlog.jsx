@@ -5,6 +5,8 @@ import axios from "axios";
 const EditBlog = () => {
   const { id } = useParams(); // Get the blog ID from URL
   const navigate = useNavigate(); // For redirection
+  const token = localStorage.getItem("token"); // Get token from localStorage
+
   const apiUrl = `https://localhost:7019/api/BlogPost/${id}`;
 
   // State to hold the blog details
@@ -14,26 +16,31 @@ const EditBlog = () => {
 
   useEffect(() => {
     // Fetch existing blog data
-    axios.get(apiUrl)
+    axios
+      .get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` }, // 🔥 Add Authorization header
+      })
       .then((response) => {
         setTitle(response.data.title);
         setCategory(response.data.category);
         setContent(response.data.context);
       })
       .catch((error) => console.error("Error fetching blog data:", error));
-  }, [apiUrl]);
+  }, [apiUrl, token]); // Ensure token is in dependencies
 
   const handleUpdate = async () => {
     const updatedBlog = {
       title,
       context: content,
       category,
-      authorId: "a5e81963-688c-4431-83da-9d9c848f4a8b",
     };
 
     try {
       await axios.put(apiUrl, updatedBlog, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // 🔥 Add Authorization header
+        },
       });
       console.log("Blog updated successfully");
       navigate("/manage"); // Redirect to Manage Blog page after update

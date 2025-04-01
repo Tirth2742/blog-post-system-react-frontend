@@ -34,10 +34,12 @@ const CreateBlog = () => {
     };
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch("https://localhost:7019/api/BlogPost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(blogPost),
       });

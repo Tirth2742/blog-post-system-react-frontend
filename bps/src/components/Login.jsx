@@ -13,7 +13,10 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post("https://localhost:7019/api/BlogPost/login", { email, password });
-      localStorage.setItem("userId", response.data); // Store the received ID
+      console.log(response.data)
+      localStorage.setItem("userId", response.data.userId); // Store the received ID
+      localStorage.setItem("token", response.data.token); // Store the received ID
+      localStorage.setItem("username", response.data.username); // Store the received ID
       navigate("/home");
     } catch (err) {
       setError("Invalid credentials. Please try again.");
